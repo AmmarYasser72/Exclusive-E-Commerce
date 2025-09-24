@@ -11,43 +11,82 @@ import { FlashSalesSlider } from "../components/Home/sliders/FlashSalesSlider/Fl
 import { ExploreOurProductsSlider } from "../components/Home/sliders/ExploreOurProductsSlider/ExploreOurProductsSlider";
 import { NewArrival } from "../components/Home/NewArrival";
 
-import services from '@/public/home/newArrival/botton/services.svg';
-import services2 from '@/public/home/newArrival/botton/services2.svg';
-import services3 from '@/public/home/newArrival/botton/services3.svg';
+import services from "@/public/home/newArrival/botton/services.svg";
+import services2 from "@/public/home/newArrival/botton/services2.svg";
+import services3 from "@/public/home/newArrival/botton/services3.svg";
 import JBL from "@/public/home/bestSelling/JBL.svg";
 
 import { HiArrowUp } from "react-icons/hi";
 import { FlashSalesTimer } from "../utils/FlashSalesTimer";
 import { BestSellingProductsTimer } from "../utils/BestSellingProductsTimer";
 
-export interface ProductsProps {
-  products: {
-    id: string;
-    name: string;
-    imageUrl: string[] | string;
-    price: number;
-    defaultPriceId?: string;
-  }[]
+export interface UiProduct {
+  id: string;
+  name: string;
+  imageUrl: string[];
+  price: number;
+  defaultPriceId?: string | null;
+}
+
+function normalizePrice(p: any): number {
+  if (typeof p === "number") return p;
+  if (typeof p === "string") return Number(p.replace(/[^0-9.]/g, "")) || 0;
+  if (p?.amount && p?.currency) return Number(p.amount) || 0;
+  if (p?.value) return Number(p.value) || 0;
+  return 0;
+}
+
+function toArrayImage(img: any): string[] {
+  if (!img) return [];
+  if (Array.isArray(img)) return img as string[];
+  if (typeof img === "string") return [img];
+  // common keys from different APIs
+  const guess = img.url || img.src || img.thumbnail || img.main || "";
+  return guess ? [guess] : [];
+}
+
+function mapApiProduct(x: any): UiProduct {
+  return {
+    id: String(x.id ?? x._id ?? x.productId ?? x.sku ?? crypto.randomUUID()),
+    name: String(x.title ?? x.name ?? x.product_name ?? "Untitled"),
+    imageUrl:
+      toArrayImage(
+        x.images ??
+          x.imageUrl ??
+          x.image_url ??
+          x.image ??
+          x.thumbnail ??
+          (x.media ? x.media.images : undefined)
+      ),
+    price: normalizePrice(x.price ?? x.unit_price ?? x.price_cents ?? x.pricing),
+    defaultPriceId: x.defaultPriceId ?? x.default_price_id ?? null,
+  };
+}
+
+async function getProducts(): Promise<UiProduct[]> {
+  try {
+    // use Next internal proxy so no CORS/env issues
+    const res = await fetch("/api/proxy/products?limit=24", { cache: "no-store" });
+    if (!res.ok) return [];
+    const data = await res.json();
+
+    // many APIs wrap in {data/items/products}
+    const list: any[] = Array.isArray(data)
+      ? data
+      : (data.data ?? data.items ?? data.products ?? data.results ?? []);
+
+    if (!Array.isArray(list)) return [];
+    const mapped = list.map(mapApiProduct);
+
+    // shuffle a bit for sliders
+    return mapped.sort(() => 0.5 - Math.random());
+  } catch {
+    return [];
+  }
 }
 
 export default async function Home() {
-  // Fetch products from your backend API
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-    cache: "no-store",
-  });
-
-  const productsData = await response.json();
-
-  // Transform based on your API response
-  const products = productsData.map((product: any) => ({
-    id: product.id,
-    name: product.name,
-    imageUrl: product.images || [],
-    price: product.price,
-    defaultPriceId: product.defaultPriceId || null,
-  })).sort(() => 0.5 - Math.random());
+  const products = await getProducts();
 
   return (
     <main className="w-11/12 lg:w-5/6 mx-auto ">
@@ -67,7 +106,9 @@ export default async function Home() {
           <FlashSalesSlider products={products} />
         </div>
         <div className="flex justify-center">
-          <Link href="/products" className="bg-exclusive-secondary hover:bg-exclusive-secondary-hover duration-200 text-exclusive-text-1 text-sm font-medium mb-16 py-4 px-12 rounded md:text-base">View All Products</Link>
+          <Link href="/products" className="bg-exclusive-secondary hover:bg-exclusive-secondary-hover duration-200 text-exclusive-text-1 text-sm font-medium mb-16 py-4 px-12 rounded md:text-base">
+            View All Products
+          </Link>
         </div>
       </section>
 
@@ -83,15 +124,21 @@ export default async function Home() {
         <SectionTag content="This Month" />
         <div className="flex justify-between">
           <SectionTitle content="Best Selling Products" />
-          <Link href="/products" className="bg-exclusive-secondary hover:bg-exclusive-secondary-hover duration-200 text-exclusive-text-1 py-2 px-6 text-sm font-medium mb-16 rounded md:text-base lg:py-4 lg:px-12">View All</Link>
+          <Link href="/products" className="bg-exclusive-secondary hover:bg-exclusive-secondary-hover duration-200 text-exclusive-text-1 py-2 px-6 text-sm font-medium mb-16 rounded md:text-base lg:py-4 lg:px-12">
+            View All
+          </Link>
         </div>
         <div className="mb-36 xl:-mr-7"><BestSellingSlider products={products} /></div>
         <div className="bg-[#010101] flex flex-col mb-[4.375rem] md:flex-row 2xl:justify-center 2xl:gap-20 3xl:gap-96">
           <div className="flex flex-col mx-auto md:items-start md:ml-14 2xl:mx-0">
             <span className="text-exclusive-primary-1 mt-[4.375rem] mb-8 font-semibold">Categories</span>
-            <h3 className="text-exclusive-text-1 mb-8 font-inter font-semibold text-4xl md:text-3xl lg:text-4xl xl:text-5xl ">Enhance Your<br /> Music Experience</h3>
+            <h3 className="text-exclusive-text-1 mb-8 font-inter font-semibold text-4xl md:text-3xl lg:text-4xl xl:text-5xl ">
+              Enhance Your<br /> Music Experience
+            </h3>
             <BestSellingProductsTimer />
-            <Link href="#" className="mt-10 text-exclusive-text-2 bg-exclusive-primary-1 hover:opacity-80 mb-[4.375rem] py-4 px-12 duration-200 mx-auto rounded md:mx-0">Buy now!</Link>
+            <Link href="#" className="mt-10 text-exclusive-text-2 bg-exclusive-primary-1 hover:opacity-80 mb-[4.375rem] py-4 px-12 duration-200 mx-auto rounded md:mx-0">
+              Buy now!
+            </Link>
           </div>
           <div className="mx-auto my-auto bg-[url('../../public/home/whiteShadow.svg')] bg-center bg-[length:270px_250px] bg-no-repeat md:bg-[length:330px_330px] lg:bg-[length:450px_450px] xl:bg-[length:580px_580px] 2xl:mx-0 2xl:bg-[length:700px_800px]">
             <Image className="mb-0 p-16 md:mb-0 md:ml-4 md:w-[550px] md:p-20 lg:w-[680px] xl:w-[768px]" src={JBL} width={768} height={0} alt="" />
@@ -105,7 +152,9 @@ export default async function Home() {
         <SectionTitle content="Explore Our Products" />
         <div className="xl:-mr-7"><ExploreOurProductsSlider products={products} /></div>
         <div className="flex justify-center">
-          <Link href="/products" className="bg-exclusive-secondary hover:bg-exclusive-secondary-hover duration-200 text-exclusive-text-1 text-sm font-medium mb-16 py-4 px-12 rounded md:text-base">View All Products</Link>
+          <Link href="/products" className="bg-exclusive-secondary hover:bg-exclusive-secondary-hover duration-200 text-exclusive-text-1 text-sm font-medium mb-16 py-4 px-12 rounded md:text-base">
+            View All Products
+          </Link>
         </div>
       </section>
 

@@ -4,7 +4,7 @@ import { useTimer } from "react-timer-hook";
 
 function getTime(){
   const time = new Date();
-  time.setSeconds(time.getSeconds() + 4); 
+  time.setSeconds(time.getSeconds() + 340000); 
 
   return time
 }

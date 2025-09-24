@@ -4,7 +4,7 @@ import { useTimer } from "react-timer-hook";
 
 function getTime(){
   const time = new Date();
-  time.setSeconds(time.getSeconds() + 4); // 99 days timer
+  time.setSeconds(time.getSeconds() + 340000); // 4 days timer
 
   return time
 }
