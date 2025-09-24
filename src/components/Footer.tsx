@@ -72,8 +72,8 @@ export function Footer() {
             <div className='flex mb-6'>
               <Image
                 src={QRcode}
-                width={0}
-                height={0}
+                width={80}
+                height={2}
                 quality={100}
                 alt="QRcode"
                 className='mt-2'
