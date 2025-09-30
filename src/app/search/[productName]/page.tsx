@@ -2,9 +2,9 @@ import { Metadata } from "next";
 import { getBaseUrl } from "@/lib/base-url";
 import { FilteredProducts } from "@/components/FilteredProducts";
 
-export const metadata: Metadata = {
-  title: "Search Results",
-};
+export const metadata: Metadata = { title: "Search Results" };
+// optional: avoid caching in edge/dev proxies
+export const dynamic = "force-dynamic";
 
 interface ParamsProps {
   params: { productName: string };
@@ -13,7 +13,7 @@ interface ParamsProps {
 type UiProduct = {
   id: string;
   name: string;
-  imageUrl: string[];      // normalized to array
+  imageUrl: string[];
   description: string;
   price: number;
   defaultPriceId?: string | null;
@@ -27,7 +27,6 @@ function toArrayImage(img: any): string[] {
   const guess = img.url || img.src || img.thumbnail || img.main || "";
   return guess ? [guess] : [];
 }
-
 function normalizePrice(p: any): number {
   if (typeof p === "number") return p;
   if (typeof p === "string") return Number(p.replace(/[^0-9.]/g, "")) || 0;
@@ -35,7 +34,6 @@ function normalizePrice(p: any): number {
   if (p?.value) return Number(p.value) || 0;
   return 0;
 }
-
 function mapApiProduct(x: any): UiProduct {
   return {
     id: String(x.id ?? x._id ?? x.productId ?? x.sku ?? crypto.randomUUID()),
@@ -87,7 +85,7 @@ export default async function Page({ params }: ParamsProps) {
           </span>
         </div>
       ) : (
-        <div className="w-5/6 mx-auto grid grid-cols gap-10 mt-20 mb-36 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5">
+        <div className="w-5/6 mx-auto grid grid-cols-1 gap-10 mt-20 mb-36 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5">
           {filtered.map((p) => (
             <FilteredProducts key={p.id} filteredProductByName={p} />
           ))}

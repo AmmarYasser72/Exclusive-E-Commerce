@@ -1,13 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-  },
+  experimental: {},
 
   images: {
-    domains: [
-      'files.stripe.com'
-    ],
-  },
-}
+    // keep any remote hosts you use
+    domains: ['files.stripe.com'],
 
-module.exports = nextConfig
+    // ✅ allow the qualities you use in <Image quality={...}>
+    qualities: [75, 100],
+
+    // optional but recommended
+    formats: ['image/avif', 'image/webp'],
+  },
+};
+
+module.exports = nextConfig;

@@ -43,7 +43,7 @@ export function Footer() {
           <h3 className='mb-6 font-medium text-xl'>Support</h3>
           <span className='mb-4 text-center'>alexandia <br /> Egypt</span>
           <span className='mb-4'>ay109543@gmail.com </span>
-          <span className='mb-4'>+0201000463804</span>
+          <span className='mb-4'>01000463804</span>
         </div>
 
         <div className='flex flex-col mb-6 lg:mb-0'>
