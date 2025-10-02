@@ -1,4 +1,5 @@
 import { Inter, Poppins } from 'next/font/google'
+// @ts-ignore: Allow side-effect import of global CSS in Next.js app directory
 import './globals.css'
 import { Header } from '../components/Header'
 import { Footer } from '../components/Footer'

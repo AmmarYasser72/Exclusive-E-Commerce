@@ -5,10 +5,15 @@ import { FiShoppingCart } from "react-icons/fi"
 import { VscHeart } from "react-icons/vsc"
 
 import { useContext } from 'react'
-import { CartAndWishlistContext } from "@/src/app/context/CartAndWishlistContextProvider";
+import { CartAndWishlistContext } from "@/app/context/CartAndWishlistContextProvider";
+
+type CartWishlistContextType = {
+  cartQuantity: number;
+  wishlistItems: any[];
+};
 
 export function WishlistAndCart() {
-  const { cartQuantity, wishlistItems } = useContext(CartAndWishlistContext)
+  const { cartQuantity, wishlistItems } = useContext(CartAndWishlistContext) as CartWishlistContextType;
 
   return (
     <div className='flex gap-4'>

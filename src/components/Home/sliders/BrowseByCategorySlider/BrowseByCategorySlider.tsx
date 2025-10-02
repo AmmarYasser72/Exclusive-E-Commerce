@@ -1,7 +1,9 @@
 'use client';
 
 import Slider, { Settings } from "react-slick";
+// @ts-ignore: side-effect CSS import has no type declarations
 import "slick-carousel/slick/slick.css";
+// @ts-ignore: side-effect CSS import has no type declarations
 import "./BrowseByCategorySlider.css";
 
 import { useRef } from "react";
@@ -54,9 +56,13 @@ export function BrowseByCategorySlider() {
     <div>
       <div className="flex justify-end gap-2 mb-[3.750rem] -mt-[2rem] md:-mt-[2.6rem] xl:-mt-0">
         {/* @ts-expect-error: slickPrev library type*/}
-        <button onClick={() => slider?.current?.slickPrev()}><HiArrowLeft size={23} className="bg-[#ecebeb] p-3 rounded-full w-9 h-9 md:w-12 md:h-12 xl:hidden"  /></button>
+        <button aria-label="Previous slide" title="Previous" onClick={() => slider?.current?.slickPrev()}>
+          <HiArrowLeft size={23} className="bg-[#ecebeb] p-3 rounded-full w-9 h-9 md:w-12 md:h-12 xl:hidden"  />
+        </button>
         {/* @ts-expect-error: slickNext library type */}
-        <button onClick={() => slider?.current?.slickNext()}><HiArrowRight size={23} className="bg-[#ecebeb] p-3 rounded-full w-9 h-9 md:w-12 md:h-12 xl:hidden" /></button>
+        <button aria-label="Next slide" title="Next" onClick={() => slider?.current?.slickNext()}>
+          <HiArrowRight size={23} className="bg-[#ecebeb] p-3 rounded-full w-9 h-9 md:w-12 md:h-12 xl:hidden" />
+        </button>
       </div>
       <Slider ref={slider} {...settings}>
         <Link href="#">

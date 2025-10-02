@@ -8,7 +8,7 @@ import { VscHeart } from 'react-icons/vsc'
 
 import Link from "next/link";
 import { ProductRating } from "./ProductRating";
-import { CartAndWishlistContext } from "@/src/app/context/CartAndWishlistContextProvider";
+import { CartAndWishlistContext } from "../../app/context/CartAndWishlistContextProvider";
 
 export interface ProductCardProps {
   id: string;
@@ -63,7 +63,12 @@ export function ProductCard({ id, name, imageUrl, defaultPriceId, price }: Produ
               <VscHeart size={20} />
             </button>
           }
-          <button className="bg-exclusive-background p-2 h-auto w-9 rounded-full hover:cursor-not-allowed" >
+          <button
+            type="button"
+            className="bg-exclusive-background p-2 h-auto w-9 rounded-full hover:cursor-not-allowed"
+            aria-label="Quick view"
+            title="Quick view"
+          >
             <FiEye size={20} />
           </button>
         </div>
