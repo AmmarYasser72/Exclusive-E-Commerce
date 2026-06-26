@@ -1,12 +1,9 @@
 import { Inter, Poppins } from 'next/font/google'
 // @ts-ignore: Allow side-effect import of global CSS in Next.js app directory
 import './globals.css'
-import { Header } from '../components/Header'
-import { Footer } from '../components/Footer'
 import { Metadata } from 'next'
-import { CartAndWishlistProvider } from './context/CartAndWishlistContextProvider'
 import { Analytics } from '@vercel/analytics/react';
-import { AuthProvider } from './context/AuthContextProvider';
+import { AppShell } from '@/components/AppShell';
 
 export const metadata: Metadata = {
   title: {
@@ -40,13 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${poppins.variable} ${inter.variable} font-poppins overflow-x-hidden`}>
       <body className='overflow-x-hidden'>
-        <AuthProvider>
-          <CartAndWishlistProvider>
-            <Header />
-            {children}
-            <Footer />
-          </CartAndWishlistProvider>
-        </AuthProvider>
+        <AppShell>{children}</AppShell>
         <Analytics />
       </body>
     </html>

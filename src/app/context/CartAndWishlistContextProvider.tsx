@@ -177,7 +177,10 @@ export function CartAndWishlistProvider({ children }: CartAndWishlistProviderPro
         return;
       }
 
-      throw error;
+      console.error("Unable to refresh cart:", error);
+      setCartItems([]);
+      setCartId(null);
+      setCartTotal(0);
     }
   }, [token]);
 
@@ -187,8 +190,13 @@ export function CartAndWishlistProvider({ children }: CartAndWishlistProviderPro
       return;
     }
 
-    const wishlist = await proxyRequest<WishlistResponse>('wishlist', { method: 'GET' }, token);
-    setWishlistItems(mapWishlistResponse(wishlist));
+    try {
+      const wishlist = await proxyRequest<WishlistResponse>('wishlist', { method: 'GET' }, token);
+      setWishlistItems(mapWishlistResponse(wishlist));
+    } catch (error) {
+      console.error("Unable to refresh wishlist:", error);
+      setWishlistItems([]);
+    }
   }, [token]);
 
   useEffect(() => {
@@ -197,7 +205,7 @@ export function CartAndWishlistProvider({ children }: CartAndWishlistProviderPro
       return;
     }
 
-    void Promise.all([refreshCart(), refreshWishlist()]);
+    void Promise.allSettled([refreshCart(), refreshWishlist()]);
   }, [refreshCart, refreshWishlist, resetCollections, token]);
 
   const cartQuantity = useMemo(
