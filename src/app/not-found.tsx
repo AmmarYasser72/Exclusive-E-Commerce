@@ -4,7 +4,7 @@ export default function NotFound() {
   return (
     <>
       <div className="flex gap-3 mt-20 text-sm w-3/4 lg:w-5/6 mx-auto">
-        <Link href="#" className="opacity-50">
+        <Link href="/" className="opacity-50">
           Home
         </Link>
         <span className="opacity-50">
@@ -24,7 +24,7 @@ export default function NotFound() {
           </span>
         </div>
         <Link
-          href="#"
+          href="/"
           className="bg-exclusive-secondary hover:bg-exclusive-secondary-hover duration-200 text-exclusive-text-1 text-sm font-medium mb-16 py-4 px-12 rounded md:text-base">Back to home page
         </Link>
       </div>
