@@ -77,6 +77,19 @@ export default function CheckoutForm() {
           required
         />
       </div>
+      <div className="mb-8">
+        <span className="mb-3 block opacity-70">Payment method</span>
+        <div className="flex flex-col gap-3 md:flex-row">
+          <label className="flex items-center gap-3 rounded border border-black/10 px-4 py-3">
+            <input type="radio" name="paymentMethod" value="online" defaultChecked />
+            <span>Online payment</span>
+          </label>
+          <label className="flex items-center gap-3 rounded border border-black/10 px-4 py-3">
+            <input type="radio" name="paymentMethod" value="cash" />
+            <span>Cash on delivery</span>
+          </label>
+        </div>
+      </div>
       <CheckoutCheckbox />
     </form>
   )
