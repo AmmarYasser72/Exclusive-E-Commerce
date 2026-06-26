@@ -1,57 +1,40 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const BASE = (process.env.BACKEND_API_URL || "").replace(/\/+$/, "");
+const BASE = (
+  process.env.NEXT_PUBLIC_ROUTE_API_BASE_URL ||
+  process.env.BACKEND_API_URL ||
+  "https://ecommerce.routemisr.com/api/v1"
+).replace(/\/+$/, "");
 const SITE = (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/+$/, "");
-const FALLBACK_BEARER = process.env.BACKEND_BEARER_TOKEN; // optional
+const FALLBACK_TOKEN = process.env.BACKEND_BEARER_TOKEN;
 
 export async function POST(req: NextRequest) {
-  if (!BASE) {
-    return NextResponse.json({ error: "BACKEND_API_URL is not set" }, { status: 500 });
-  }
-
-  // Expect { cartId?, lineItems?, ...rest }
   const body = await req.json().catch(() => ({} as any));
-  const { cartId, lineItems, ...rest } = body || {};
+  const { cartId, shippingAddress } = body || {};
 
-  // Build absolute return URLs
-  const successUrl = `${SITE}/cart/checkout/success`;
-  const cancelUrl  = `${SITE}/cart/checkout/cancel`;
-
-  // Forward auth from the caller if present; otherwise use server token if configured
-  const callerAuth = req.headers.get("authorization");
-  const authHeader =
-    callerAuth || (FALLBACK_BEARER ? `Bearer ${FALLBACK_BEARER}` : undefined);
-
-  // Two common modes:
-  // 1) Routemisr style: POST /orders/checkout-session/:cartId?url=<success>
-  // 2) Generic custom:  POST /checkout with { lineItems, successUrl, cancelUrl }
-  let url: string;
-  let init: RequestInit;
-
-  if (cartId) {
-    url = `${BASE}/orders/checkout-session/${cartId}?url=${encodeURIComponent(successUrl)}`;
-    init = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(authHeader ? { Authorization: authHeader } : {}),
-      },
-      // routemisr expects (optionally) { shippingAddress, phone, ... }
-      body: JSON.stringify(rest),
-    };
-  } else {
-    url = `${BASE}/checkout`;
-    init = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(authHeader ? { Authorization: authHeader } : {}),
-      },
-      body: JSON.stringify({ lineItems, successUrl, cancelUrl, ...rest }),
-    };
+  if (!cartId) {
+    return NextResponse.json({ message: "cartId is required" }, { status: 400 });
   }
 
-  const res = await fetch(url, init);
+  const successUrl = `${SITE}/cart/checkout/success`;
+  const token = req.headers.get("token") ?? FALLBACK_TOKEN ?? undefined;
+
+  if (!token) {
+    return NextResponse.json({ message: "Authentication token is required" }, { status: 401 });
+  }
+
+  const res = await fetch(
+    `${BASE}/orders/checkout-session/${cartId}?url=${encodeURIComponent(successUrl)}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        token,
+      },
+      body: JSON.stringify({ shippingAddress }),
+      cache: "no-store",
+    }
+  );
 
   const ct = res.headers.get("content-type") || "";
   let payload: any;
@@ -62,10 +45,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (!res.ok) {
-    return NextResponse.json(
-      { error: true, status: res.status, payload },
-      { status: res.status }
-    );
+    return NextResponse.json(payload ?? { error: true }, { status: res.status });
   }
 
   return NextResponse.json(payload ?? { ok: true });
