@@ -8,6 +8,8 @@ type UiProduct = {
   imageUrl: string[] | string;
   price: number;
   defaultPriceId?: string | null;
+  rating?: number;
+  ratingCount?: number;
 };
 
 export type ProductsProps = {
@@ -38,6 +40,8 @@ export function AllProducts({ products }: ProductsProps) {
           imageUrl={toArray(p.imageUrl)}
           price={p.price}
           defaultPriceId={p.defaultPriceId ?? undefined}
+          rating={p.rating}
+          ratingCount={p.ratingCount}
         />
       ))}
     </main>

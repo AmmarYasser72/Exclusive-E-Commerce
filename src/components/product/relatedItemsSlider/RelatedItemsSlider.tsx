@@ -3,11 +3,10 @@
 import Slider, { Settings } from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "./RelatedItemsSlider.css";
-import { ProductCard } from "../ProductCard";
-import type { UiProduct } from "@/app/page";
+import { ProductCard, type ProductCardProps } from "../ProductCard";
 
 interface ProductsProps {
-  products: UiProduct[];
+  products: ProductCardProps[];
 }
 
 const settings: Settings = {

@@ -4,7 +4,7 @@ const nextConfig = {
 
   images: {
     // keep any remote hosts you use
-    domains: ['files.stripe.com'],
+    domains: ['files.stripe.com', 'ecommerce.routemisr.com'],
 
     // ✅ allow the qualities you use in <Image quality={...}>
     qualities: [75, 100],

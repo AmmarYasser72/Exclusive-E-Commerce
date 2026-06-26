@@ -16,14 +16,25 @@ export interface ProductCardProps {
   imageUrl: string | string[];
   price: number;
   defaultPriceId?: string | null;
+  rating?: number;
+  ratingCount?: number;
 }
 
-export function ProductCard({ id, name, imageUrl, defaultPriceId, price }: ProductCardProps) {
+export function ProductCard({
+  id,
+  name,
+  imageUrl,
+  defaultPriceId,
+  price,
+  rating,
+  ratingCount,
+}: ProductCardProps) {
   const [discount, setDiscount] = useState(true)
   const [discountAmount, setDiscountAmout] = useState(20)
   const [newProduct, setNewProduct] = useState(true)
   const [quantity, setQuantity] = useState(1)
   const { handleAddItemOnCart, handleAddItemOnWishlist, removeFromWishlist, verifyItemOnWishlist } = useContext(CartAndWishlistContext)
+  const displayImage = Array.isArray(imageUrl) ? imageUrl[0] : imageUrl;
 
   function priceWithoutDiscount() {
     if (discount) {
@@ -58,7 +69,7 @@ export function ProductCard({ id, name, imageUrl, defaultPriceId, price }: Produ
               className="bg-exclusive-background p-2 h-auto w-9 rounded-full "
               aria-label="add to wishlist"
               title="add to wishlist"
-              onClick={() => handleAddItemOnWishlist(id, name, imageUrl?.[0], defaultPriceId, price)}
+              onClick={() => handleAddItemOnWishlist(id, name, displayImage, defaultPriceId, price)}
             >
               <VscHeart size={20} />
             </button>
@@ -76,7 +87,7 @@ export function ProductCard({ id, name, imageUrl, defaultPriceId, price }: Produ
       <div className="bg-[#ecebeb] flex flex-col items-center mb-4 rounded pt-[3.775rem] h-[20rem] group focus:outline-none ">
         <Link href={`/products/${id}`} className="h-[82%] mx-auto flex items-center justify-center focus:outline-none focus:border-none" >
           <Image
-            src={imageUrl?.[0]}
+            src={displayImage}
             alt={name}
             width={130}
             height={190}
@@ -87,7 +98,7 @@ export function ProductCard({ id, name, imageUrl, defaultPriceId, price }: Produ
         <footer className="w-full overflow-hidden">
           <button
             className="w-full text-exclusive-text-1 bg-black flex justify-center cursor-pointer rounded-b py-1 font-medium transform translate-y-[110%] opacity-0 group-hover:translate-y-[0%] group-hover:opacity-100 transition-all ease-in-out duration-200 mt-4 md:py-2 md:mt-2 "
-            onClick={() => handleAddItemOnCart(id, name, imageUrl?.[0], price, defaultPriceId, quantity)}
+            onClick={() => handleAddItemOnCart(id, name, displayImage, price, defaultPriceId, quantity)}
           >
             Add To Cart
           </button>
@@ -104,7 +115,7 @@ export function ProductCard({ id, name, imageUrl, defaultPriceId, price }: Produ
           </div>
           : <span className="text-exclusive-secondary">${price}</span>
         }
-        <ProductRating />
+        <ProductRating value={rating} count={ratingCount} />
       </div>
     </div>
   )

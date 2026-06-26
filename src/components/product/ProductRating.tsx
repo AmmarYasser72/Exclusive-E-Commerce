@@ -2,8 +2,12 @@ import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import StarIcon from '@mui/icons-material/Star';
 
-export function ProductRating() {
-  const value = 4.5;
+interface ProductRatingProps {
+  value?: number;
+  count?: number;
+}
+
+export function ProductRating({ value = 4.5, count = 99 }: ProductRatingProps) {
 
   return (
     <Box
@@ -22,7 +26,7 @@ export function ProductRating() {
         emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
       />
       <Box sx={{ ml: 1 }}>
-        <span className='opacity-50 font-semibold text-sm'>(99)</span>
+        <span className='opacity-50 font-semibold text-sm'>({count})</span>
       </Box>
     </Box>
   );

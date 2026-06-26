@@ -1,57 +1,93 @@
+import Link from "next/link";
 import { Metadata } from "next";
-import { getBaseUrl } from "@/lib/base-url";
-import { AllProducts } from "@/components/product/allProductsPage/AllProducts";
+import { notFound } from "next/navigation";
 
-export const metadata: Metadata = { title: "All Products" };
+import { ProductInfoCard } from "@/components/product/productPage/ProductInfoCard";
+import { RelatedItemsSlider } from "@/components/product/relatedItemsSlider/RelatedItemsSlider";
+import { SectionTag } from "@/components/Home/SectionTag";
+import { SectionTitle } from "@/components/Home/SectionTitle";
+import { mapRouteProduct, routeFetch } from "@/lib/route-api";
+import type { RouteProduct } from "@/lib/route-types";
+
 export const dynamic = "force-dynamic";
 
-type UiProduct = {
-  id: string;
-  name: string;
-  imageUrl: string[];
-  price: number;
-  defaultPriceId?: string | null;
-};
-
-function toArrayImage(x: any): string[] {
-  // your API usually sends imageCover; keep images[] as fallback
-  if (Array.isArray(x?.images) && x.images.length) return x.images.filter(Boolean);
-  if (x?.imageCover) return [x.imageCover];
-  if (typeof x?.image === "string") return [x.image];
-  return [];
+interface PageProps {
+  params: Promise<{ id: string }>;
 }
 
-function mapFromYourApi(x: any): UiProduct {
-  return {
-    id: String(x._id ?? x.id),
-    name: String(x.title ?? x.name ?? "Untitled"),
-    imageUrl: toArrayImage(x),
-    price: Number(x.price) || 0,
-    defaultPriceId: null,
-  };
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+
+  try {
+    const response = await routeFetch<{ data: RouteProduct }>(`products/${id}`);
+    return {
+      title: response.data.title,
+      description: response.data.description,
+    };
+  } catch {
+    return {
+      title: "Product Details",
+    };
+  }
 }
 
-async function getAllFromYourApi(): Promise<UiProduct[]> {
-  const base = await getBaseUrl();
+export default async function Page({ params }: PageProps) {
+  const { id } = await params;
 
-  // If BACKEND_API_URL ends with /api/v1, this hits: <API>/products
-  // If your BACKEND_API_URL is the domain root, change the path to `/api/proxy/api/v1/products`
-  const res = await fetch(`${base}/api/proxy/products?limit=200`, { cache: "no-store" });
+  let product: RouteProduct;
 
-  if (!res.ok) return [];
+  try {
+    const response = await routeFetch<{ data: RouteProduct }>(`products/${id}`);
+    product = response.data;
+  } catch {
+    notFound();
+  }
 
-  const data = await res.json();
+  const relatedResponse = await routeFetch<{ data: RouteProduct[] }>("products", {
+    query: {
+      limit: 8,
+      category: product.category?._id,
+    },
+  }).catch(() => ({ data: [] }));
 
-  // Common shapes in Node/Express e-commerce APIs
-  const list: any[] = Array.isArray(data)
-    ? data
-    : (data.data ?? data.products ?? data.items ?? data.results ?? []);
+  const productView = mapRouteProduct(product);
+  const relatedProducts = relatedResponse.data
+    .filter((item) => (item.id ?? item._id) !== productView.id)
+    .map(mapRouteProduct)
+    .slice(0, 8);
 
-  if (!Array.isArray(list)) return [];
-  return list.map(mapFromYourApi);
-}
+  return (
+    <main className="pb-24">
+      <div className="mx-auto flex w-5/6 gap-3 pt-10 text-sm lg:pt-20">
+        <Link href="/" className="opacity-50">
+          Home
+        </Link>
+        <span className="opacity-50">/</span>
+        <Link href="/products" className="opacity-50">
+          Products
+        </Link>
+        <span className="opacity-50">/</span>
+        <span className="font-medium">{productView.name}</span>
+      </div>
 
-export default async function Page() {
-  const products = await getAllFromYourApi();
-  return <AllProducts products={products} />;
+      <ProductInfoCard
+        productInfo={{
+          ...productView,
+          brandName: product.brand?.name,
+          categoryName: product.category?.name,
+          defaultPriceId: null,
+        }}
+      />
+
+      {relatedProducts.length ? (
+        <section className="mx-auto w-5/6">
+          <SectionTag content="Related Items" />
+          <SectionTitle content="You May Also Like" />
+          <div className="mt-10">
+            <RelatedItemsSlider products={relatedProducts} />
+          </div>
+        </section>
+      ) : null}
+    </main>
+  );
 }
