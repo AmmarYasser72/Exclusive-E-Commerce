@@ -11,12 +11,21 @@ export const metadata: Metadata = {
       index: true,
       follow: false,
       noimageindex: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
 };
+
+const CHECKOUT_API_BASE = (
+  process.env.NEXT_PUBLIC_ROUTE_API_BASE_URL ||
+  process.env.BACKEND_API_URL ||
+  "https://ecommerce.routemisr.com/api/v1"
+).replace(/\/+$/, "");
+
+const CHECKOUT_API_TOKEN =
+  process.env.BACKEND_BEARER_TOKEN || process.env.NEXT_PUBLIC_API_TOKEN;
 
 interface PageProps {
   searchParams: Promise<{
@@ -28,21 +37,26 @@ export default async function Page({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
   const sessionId = String(resolvedSearchParams.session_id ?? "");
 
-  // ✅ Fetch session details from your backend API
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/checkout/session/${sessionId}`, {
+  if (!sessionId) {
+    throw new Error("Missing checkout session id");
+  }
+
+  const response = await fetch(`${CHECKOUT_API_BASE}/checkout/session/${sessionId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN}`, // optional if your API needs auth
+      ...(CHECKOUT_API_TOKEN ? { token: CHECKOUT_API_TOKEN } : {}),
     },
-    cache: "no-store", // so data is always fresh
+    cache: "no-store",
   });
 
-  const data = await response.json();
+  if (!response.ok) {
+    throw new Error("Failed to load checkout session");
+  }
 
-  // Assuming your API returns similar structure:
+  const data = await response.json();
   const customerName = data.customerName;
-  const products = data.products; // array of { image: string, quantity: number, description: string }
+  const products = data.products;
 
   return (
     <div className="w-5/6 mx-auto flex justify-center">

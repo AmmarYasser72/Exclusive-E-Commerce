@@ -184,28 +184,28 @@ export default async function Home() {
       </section>
 
       {/* New Arrival */}
-      <section>
+      <section className="mb-14">
         <SectionTag content="Featured" />
         <SectionTitle content="New Arrival" />
         <div className="flex"><NewArrival /></div>
       </section>
 
       {/* Services */}
-      <section className="flex flex-col justify-center gap-20 items-center mb-16 lg:flex-row lg:gap-8 xl:gap-[5.5rem]">
-        <div className="flex flex-col items-center">
-          <Image src="/home/newArrival/botton/services.svg" width={100} height={100} alt="" className="mb-6 h-auto w-auto" />
-          <span className="mb-2 font-semibold text-xl">FREE AND FAST DELIVERY</span>
-          <span className="text-sm">Free delivery for all orders over $140</span>
+      <section className="mb-16 flex flex-col items-center justify-center gap-10 sm:gap-12 lg:flex-row lg:items-start lg:gap-16 xl:gap-24">
+        <div className="flex max-w-[15rem] flex-col items-center text-center">
+          <Image src="/home/newArrival/botton/services.svg" width={80} height={80} alt="" className="mb-4 h-20 w-20" />
+          <span className="mb-2 text-sm font-semibold sm:text-base">FREE AND FAST DELIVERY</span>
+          <span className="text-xs leading-5 sm:text-sm">Free delivery for all orders over $140</span>
         </div>
-        <div className="flex flex-col items-center">
-          <Image src="/home/newArrival/botton/services2.svg" width={100} height={100} alt="" className="mb-6 h-auto w-auto" />
-          <span className="mb-2 font-semibold text-xl">24/7 CUSTOMER SERVICE</span>
-          <span className="text-sm">Friendly 24/7 customer support</span>
+        <div className="flex max-w-[15rem] flex-col items-center text-center">
+          <Image src="/home/newArrival/botton/services2.svg" width={80} height={80} alt="" className="mb-4 h-20 w-20" />
+          <span className="mb-2 text-sm font-semibold sm:text-base">24/7 CUSTOMER SERVICE</span>
+          <span className="text-xs leading-5 sm:text-sm">Friendly 24/7 customer support</span>
         </div>
-        <div className="flex flex-col items-center">
-          <Image src="/home/newArrival/botton/services3.svg" width={100} height={100} alt="" className="mb-6 h-auto w-auto" />
-          <span className="mb-2 font-semibold text-xl">MONEY BACK GUARANTEE</span>
-          <span className="text-sm">We return money within 30 days</span>
+        <div className="flex max-w-[15rem] flex-col items-center text-center">
+          <Image src="/home/newArrival/botton/services3.svg" width={80} height={80} alt="" className="mb-4 h-20 w-20" />
+          <span className="mb-2 text-sm font-semibold sm:text-base">MONEY BACK GUARANTEE</span>
+          <span className="text-xs leading-5 sm:text-sm">We return money within 30 days</span>
         </div>
       </section>
 
