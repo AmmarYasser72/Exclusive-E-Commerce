@@ -92,7 +92,7 @@ export function ProductCard({
             width={130}
             height={190}
             quality={100}
-            className="focus:outline-none focus:border-none w-[220px] max-h-[190px] px-4 my-auto lg:w-[230px] 2xl:w-[240px] ">
+            className="focus:outline-none focus:border-none h-auto w-[220px] max-h-[190px] px-4 my-auto lg:w-[230px] 2xl:w-[240px] ">
           </Image>
         </Link>
         <footer className="w-full overflow-hidden">

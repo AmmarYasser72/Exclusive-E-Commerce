@@ -35,7 +35,14 @@ export function Header() {
       <section className="mx-auto flex w-11/12 flex-col gap-6 py-8 lg:w-5/6 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
           <Link href="/" aria-label="Exclusive home" className="flex justify-center lg:justify-start">
-            <Image src="/header/logo-header.svg" width={140} height={20} alt="Exclusive" priority />
+            <Image
+              src="/header/logo-header.svg"
+              width={140}
+              height={20}
+              alt="Exclusive"
+              priority
+              className="h-auto w-auto"
+            />
           </Link>
 
           <nav>

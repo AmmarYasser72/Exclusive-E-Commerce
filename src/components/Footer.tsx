@@ -67,7 +67,7 @@ export function Footer() {
                 width={80}
                 height={48}
                 alt="QR code"
-                className="mt-1 shrink-0"
+                className="mt-1 h-auto w-auto shrink-0"
               />
               <div className="flex flex-col items-center">
                 <Link href="#">
