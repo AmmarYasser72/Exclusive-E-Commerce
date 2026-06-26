@@ -32,7 +32,7 @@ function mapFromYourApi(x: any): UiProduct {
 }
 
 async function getAllFromYourApi(): Promise<UiProduct[]> {
-  const base = getBaseUrl();
+  const base = await getBaseUrl();
 
   // If BACKEND_API_URL ends with /api/v1, this hits: <API>/products
   // If your BACKEND_API_URL is the domain root, change the path to `/api/proxy/api/v1/products`

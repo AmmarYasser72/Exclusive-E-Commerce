@@ -4,7 +4,11 @@ import Slider, { Settings } from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "./RelatedItemsSlider.css";
 import { ProductCard } from "../ProductCard";
-import { ProductsProps } from "@/src/app/page";
+import type { UiProduct } from "@/app/page";
+
+interface ProductsProps {
+  products: UiProduct[];
+}
 
 const settings: Settings = {
   dots: false,

@@ -68,7 +68,7 @@ function mapApiProduct(x: any): UiProduct {
 
 async function getProducts(): Promise<UiProduct[]> {
   try {
-    const base = getBaseUrl();
+    const base = await getBaseUrl();
     const res = await fetch(`${base}/api/proxy/products?limit=24`, {
       cache: "no-store",
     });

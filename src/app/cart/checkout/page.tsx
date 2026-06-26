@@ -1,7 +1,7 @@
-import { Navigation } from "@/src/components/checkout/Navigation";
+import { Navigation } from "@/components/checkout/Navigation";
 import { Metadata } from "next";
-import { ShowCheckoutData } from "@/src/components/checkout/ShowCheckoutData";
-import CheckoutForm from "@/src/components/checkout/CheckoutForm";
+import { ShowCheckoutData } from "@/components/checkout/ShowCheckoutData";
+import CheckoutForm from "@/components/checkout/CheckoutForm";
 
 export const metadata: Metadata = {
   title: "Checkout"

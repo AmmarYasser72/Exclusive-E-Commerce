@@ -13,7 +13,7 @@ export interface CartItem {
   imageURL?: string,
   price?: number,
   quantity?: number,
-  defaultPriceId?: string,
+  defaultPriceId?: string | null,
 }
 
 export interface WishlistItem {
@@ -21,20 +21,20 @@ export interface WishlistItem {
   name: string,
   imageURL: string,
   price: number,
-  defaultPriceId?: string,
+  defaultPriceId?: string | null,
 }
 
 interface CartAndWishlistItemContext {
   cartItems: CartItem[],
   cartQuantity: number,
   wishlistItems: WishlistItem[],
-  handleAddItemOnCart: (id: string, name: string, imageURL: string, price: number, defaultPriceId: string, quantity: number) => void,
-  handleBuyItem: (id: string, name: string, imageURL: string, price: number, defaultPriceId: string, quantity: number) => void,
+  handleAddItemOnCart: (id: string, name: string, imageURL: string, price: number, defaultPriceId: string | null | undefined, quantity: number) => void,
+  handleBuyItem: (id: string, name: string, imageURL: string, price: number, defaultPriceId: string | null | undefined, quantity: number) => void,
   increaseItemQuantity: (id: string) => void
   decreaseItemQuantity: (id: string) => void
   getItemQuantity: (id: string) => number,
   removeFromCart: (id: string) => void,
-  handleAddItemOnWishlist: (id: string, name: string, imageURL: string, defaultPriceId: string, price: number) => void,
+  handleAddItemOnWishlist: (id: string, name: string, imageURL: string, defaultPriceId: string | null | undefined, price: number) => void,
   removeFromWishlist: (id: string) => void,
   verifyItemOnWishlist: (id: string) => boolean | undefined,
   handleMoveItemsFromWishlistToCart: () => void,
@@ -105,7 +105,7 @@ export function CartAndWishlistProvider({ children }: CartAndWishlistProviderPro
     setCartItems([])
   }
 
-  function handleAddItemOnCart(id: string, name: string, imageURL: string, price: number, defaultPriceId: string, quantity: number) {
+  function handleAddItemOnCart(id: string, name: string, imageURL: string, price: number, defaultPriceId: string | null | undefined, quantity: number) {
     setCartItems(currentItem => {
       if (currentItem.find(item => item.name === name) == null) {
         return [...currentItem, { id, name, imageURL, price, defaultPriceId, quantity }]
@@ -121,7 +121,7 @@ export function CartAndWishlistProvider({ children }: CartAndWishlistProviderPro
     })
   }
 
-  function handleBuyItem(id: string, name: string, imageURL: string, price: number, defaultPriceId: string, quantity: number) {
+  function handleBuyItem(id: string, name: string, imageURL: string, price: number, defaultPriceId: string | null | undefined, quantity: number) {
     setCartItems(currentItem => {
       if (currentItem.find(item => item.name === name) == null) {
         return [...currentItem, { id, name, imageURL, price, defaultPriceId, quantity }]
@@ -181,7 +181,7 @@ export function CartAndWishlistProvider({ children }: CartAndWishlistProviderPro
   }
 
 
-  function handleAddItemOnWishlist(id: string, name: string, imageURL: string, defaultPriceId: string, price: number) {
+  function handleAddItemOnWishlist(id: string, name: string, imageURL: string, defaultPriceId: string | null | undefined, price: number) {
     setWishlistItems(currentItem => {
       if (currentItem.find(item => item.name === name) == null) {
         return [...currentItem, { id, name, imageURL, price, defaultPriceId, quantity: 1 }]

@@ -51,7 +51,7 @@ function mapApiProduct(x: any): UiProduct {
 }
 
 async function getRecommended(): Promise<UiProduct[]> {
-  const base = getBaseUrl(); // << use absolute base
+  const base = await getBaseUrl(); // << use absolute base
   const res = await fetch(`${base}/api/proxy/products?limit=12`, { cache: "no-store" });
   if (!res.ok) return [];
   const data = await res.json();

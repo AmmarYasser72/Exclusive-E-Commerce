@@ -10,8 +10,8 @@ import Image from 'next/image';
 import { AiOutlineMinus, AiOutlinePlus } from 'react-icons/ai';
 import { VscHeart } from 'react-icons/vsc'
 import { TbRefresh, TbTruckDelivery } from 'react-icons/tb';
-import { ProductRating } from '@/src/components/product/ProductRating';
-import { CartAndWishlistContext } from '@/src/app/context/CartAndWishlistContextProvider';
+import { ProductRating } from '@/components/product/ProductRating';
+import { CartAndWishlistContext } from '@/app/context/CartAndWishlistContextProvider';
 
 
 interface ProductInfoProps {

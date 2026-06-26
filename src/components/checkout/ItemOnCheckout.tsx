@@ -1,6 +1,6 @@
 "use client";
 
-import { CartAndWishlistContext } from "@/src/app/context/CartAndWishlistContextProvider";
+import { CartAndWishlistContext } from "@/app/context/CartAndWishlistContextProvider";
 import Image from "next/image";
 import { useContext } from "react";
 

@@ -19,13 +19,14 @@ export const metadata: Metadata = {
 };
 
 interface PageProps {
-  searchParams: {
+  searchParams: Promise<{
     session_id?: string;
-  };
+  }>;
 }
 
 export default async function Page({ searchParams }: PageProps) {
-  const sessionId = String(searchParams.session_id);
+  const resolvedSearchParams = await searchParams;
+  const sessionId = String(resolvedSearchParams.session_id ?? "");
 
   // ✅ Fetch session details from your backend API
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/checkout/session/${sessionId}`, {

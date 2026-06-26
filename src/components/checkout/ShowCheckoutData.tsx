@@ -1,6 +1,6 @@
 "use client";
 
-import { CartAndWishlistContext } from "@/src/app/context/CartAndWishlistContextProvider";
+import { CartAndWishlistContext } from "@/app/context/CartAndWishlistContextProvider";
 import { useContext } from "react";
 import { ItemOnCheckout } from "./ItemOnCheckout";
 

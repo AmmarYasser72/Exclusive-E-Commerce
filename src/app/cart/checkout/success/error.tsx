@@ -1,6 +1,6 @@
 'use client';
 
-import NotFound from '@/src/app/not-found';
+import NotFound from '@/app/not-found';
 
 export default function Error() {
   return <NotFound />

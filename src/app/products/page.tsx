@@ -32,7 +32,7 @@ function mapFromYourApi(x: any): UiProduct {
 }
 
 async function getAllFromYourApi(): Promise<UiProduct[]> {
-  const base = getBaseUrl();
+  const base = await getBaseUrl();
 
   // ✅ correct proxy URL (no extra /api/v1)
   const res = await fetch(`${base}/api/proxy/products?limit=200`, { cache: "no-store" });

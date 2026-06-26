@@ -2,7 +2,7 @@
 
 import { useContext } from "react";
 import { CheckoutCheckbox } from "./CheckoutCheckbox";
-import { CartAndWishlistContext } from "@/src/app/context/CartAndWishlistContextProvider";
+import { CartAndWishlistContext } from "@/app/context/CartAndWishlistContextProvider";
 
 export default function CheckoutForm() {
   const { handleCheckout } = useContext(CartAndWishlistContext)

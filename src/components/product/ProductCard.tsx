@@ -15,7 +15,7 @@ export interface ProductCardProps {
   name: string;
   imageUrl: string | string[];
   price: number;
-  defaultPriceId: string;
+  defaultPriceId?: string | null;
 }
 
 export function ProductCard({ id, name, imageUrl, defaultPriceId, price }: ProductCardProps) {

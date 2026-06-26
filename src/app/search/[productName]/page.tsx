@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Search Results" };
 export const dynamic = "force-dynamic";
 
 interface ParamsProps {
-  params: { productName: string };
+  params: Promise<{ productName: string }>;
 }
 
 type UiProduct = {
@@ -54,7 +54,7 @@ function mapApiProduct(x: any): UiProduct {
 
 /* ---------- data ---------- */
 async function getAllProducts(): Promise<UiProduct[]> {
-  const base = getBaseUrl(); // absolute URL for server fetch
+  const base = await getBaseUrl(); // absolute URL for server fetch
   const res = await fetch(`${base}/api/proxy/products?limit=200`, { cache: "no-store" });
   if (!res.ok) return [];
   const data = await res.json();
@@ -69,7 +69,8 @@ async function getAllProducts(): Promise<UiProduct[]> {
 
 /* ---------- page ---------- */
 export default async function Page({ params }: ParamsProps) {
-  const query = decodeURIComponent(params.productName || "").trim().toLowerCase();
+  const resolvedParams = await params;
+  const query = decodeURIComponent(resolvedParams.productName || "").trim().toLowerCase();
   const products = await getAllProducts();
 
   const filtered = query
