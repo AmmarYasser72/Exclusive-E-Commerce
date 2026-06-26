@@ -10,6 +10,8 @@ interface FilteredProductByName {
     description: string | null;
     price: number;
     defaultPriceId?: string | null;
+    rating?: number;
+    ratingCount?: number;
   }
 }
 
