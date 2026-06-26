@@ -6,6 +6,7 @@ import { Footer } from '../components/Footer'
 import { Metadata } from 'next'
 import { CartAndWishlistProvider } from './context/CartAndWishlistContextProvider'
 import { Analytics } from '@vercel/analytics/react';
+import { AuthProvider } from './context/AuthContextProvider';
 
 export const metadata: Metadata = {
   title: {
@@ -39,11 +40,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${poppins.variable} ${inter.variable} font-poppins overflow-x-hidden`}>
       <body className='overflow-x-hidden'>
-        <CartAndWishlistProvider>
-          <Header />
-          {children}
-          <Footer />
-        </CartAndWishlistProvider>
+        <AuthProvider>
+          <CartAndWishlistProvider>
+            <Header />
+            {children}
+            <Footer />
+          </CartAndWishlistProvider>
+        </AuthProvider>
         <Analytics />
       </body>
     </html>
