@@ -1,12 +1,49 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { FcGoogle } from "react-icons/fc";
+import { useRouter } from "next/navigation";
+import { FormEvent, useContext, useState } from "react";
+
+import { AuthContext } from "@/app/context/AuthContextProvider";
 
 export default function Page() {
+  const router = useRouter();
+  const { signUp } = useContext(AuthContext);
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError("");
+    setIsSubmitting(true);
+
+    const formData = new FormData(event.currentTarget);
+
+    try {
+      await signUp({
+        name: String(formData.get("name") ?? ""),
+        email: String(formData.get("email") ?? ""),
+        phone: String(formData.get("phone") ?? ""),
+        password: String(formData.get("password") ?? ""),
+        rePassword: String(formData.get("rePassword") ?? ""),
+      });
+
+      router.push("/");
+    } catch (submissionError) {
+      setError(
+        submissionError instanceof Error
+          ? submissionError.message
+          : "Unable to create your account right now."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <div className="flex flex-col lg:mt-16 lg:mb-16 lg:flex-row">
       <div className="mb-16 lg:mb-0 lg:w-[50%] xl:flex-1 2xl:flex-none">
-        {/* Use path from /public */}
         <Image
           src="/signup-login/shop-blue-background.svg"
           width={1000}
@@ -17,47 +54,66 @@ export default function Page() {
         />
       </div>
 
-      <form className="flex flex-col items-center mb-16 mx-7 md:mx-20 lg:items-start lg:justify-center 2xl:mx-auto">
-        <h2 className="font-inter font-medium text-4xl mb-6">Create an account</h2>
-        <span className="mb-12">Enter your details below</span>
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col items-center mb-16 mx-7 md:mx-20 lg:items-start lg:justify-center 2xl:mx-auto w-full max-w-md"
+      >
+        <h2 className="font-inter text-4xl font-medium mb-6">Create an account</h2>
+        <span className="mb-12">Start shopping with your Route API profile.</span>
 
         <input
           type="text"
           id="name"
+          name="name"
           placeholder="Name"
-          className="bg-transparent border-b border-[#a5a5a5] w-full mb-10 py-1 focus:outline-none"
+          className="bg-transparent border-b border-[#a5a5a5] w-full mb-8 py-2 focus:outline-none"
           required
         />
 
         <input
-          type="text"
-          id="emailOrPhone"
-          placeholder="Email or Phone Number"
-          className="bg-transparent border-b border-[#a5a5a5] w-full mb-10 py-1 focus:outline-none"
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Email Address"
+          className="bg-transparent border-b border-[#a5a5a5] w-full mb-8 py-2 focus:outline-none"
+          required
+        />
+
+        <input
+          type="tel"
+          id="phone"
+          name="phone"
+          placeholder="Phone Number"
+          className="bg-transparent border-b border-[#a5a5a5] w-full mb-8 py-2 focus:outline-none"
           required
         />
 
         <input
           type="password"
           id="password"
+          name="password"
           placeholder="Password"
-          className="bg-transparent border-b border-[#a5a5a5] w-full mb-10 py-1 focus:outline-none"
+          className="bg-transparent border-b border-[#a5a5a5] w-full mb-8 py-2 focus:outline-none"
           required
         />
 
-        <button
-          type="submit"
-          className="mb-4 bg-exclusive-secondary hover:bg-exclusive-secondary-hover duration-200 w-full rounded text-exclusive-text-1 py-4"
-        >
-          Create Account
-        </button>
+        <input
+          type="password"
+          id="rePassword"
+          name="rePassword"
+          placeholder="Confirm Password"
+          className="bg-transparent border-b border-[#a5a5a5] w-full mb-4 py-2 focus:outline-none"
+          required
+        />
+
+        {error ? <p className="mb-5 text-sm text-red-500">{error}</p> : null}
 
         <button
-          type="button"
-          className="mb-8 flex gap-4 border border-[#a5a5a5] w-full rounded justify-center items-center"
+          type="submit"
+          disabled={isSubmitting}
+          className="mb-8 w-full rounded bg-exclusive-secondary py-4 text-white transition hover:bg-exclusive-secondary-hover disabled:cursor-not-allowed disabled:opacity-60"
         >
-          <FcGoogle size={28} />
-          <span className="py-4">Sign up with Google</span>
+          {isSubmitting ? "Creating account..." : "Create account"}
         </button>
 
         <div className="flex gap-4 mx-auto">
